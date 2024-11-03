@@ -12,12 +12,10 @@
     <div class="container align-middle">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-                    role="tab" aria-controls="home" aria-selected="true">Sign Up</button>
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Sign Up</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
-                    role="tab" aria-controls="profile" aria-selected="false">Sign In</button>
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Sign In</button>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -25,26 +23,31 @@
                 <form class="row" name="register">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input class="col-12 form-control" type="text" name="name" id="name">
+                        <input class="col-12 form-control" type="text" name="name" id="name" placeholder="Name">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input class="col-12 form-control" type="text" name="email" id="email">
+                        <input class="col-12 form-control" type="text" name="email" id="email" placeholder="Email">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input class="col-12 form-control" type="password" name="password" id="password">
+                        <input class="col-12 form-control" type="password" name="password" id="password" placeholder="Password">
                     </div>
                     <div class="mb-3">
                         <label for="mobile" class="form-label">Mobile</label>
                         <span class="input-group">
-                            <input class="col-12 form-control" type="number" name="mobile" id="mobile">
-                            <button class="input-group-text">Verify</button>
+                            <input class="col-12 form-control" type="number" name="mobile" id="mobile" placeholder="Mobile">
+                            <button type="button" class="input-group-text veryfyMobile" onclick="otpVerify()">Verify</button>
+                        </span>
+                    </div>
+                    <div class="mb-3 d-none" id="otpVerify">
+                        <span class="input-group">
+                            <input class="col-12 form-control" type="number" name="otp" id="otp" placeholder="OTP" autocomplete="off">
+                            <button type="button" class="input-group-text" onclick="otpVerify()">Verify</button>
                         </span>
                     </div>
                     <div class="mb-3">
-                        <button class="btn btn-primary col-12 form-control" type="button"
-                            onclick="submitForm('register')">Sign Up</button>
+                        <button class="btn btn-primary col-12 form-control" type="button" onclick="submitForm('register')">Sign Up</button>
                     </div>
                 </form>
             </div>
@@ -59,8 +62,7 @@
                         <input class="col-12 form-control" type="password" name="log_password" id="log_password">
                     </div>
                     <div class="mb-3">
-                        <button class="btn btn-primary col-12 form-control" type="button"
-                            onclick="submitForm('login')">Sign In</button>
+                        <button class="btn btn-primary col-12 form-control" type="button" onclick="submitForm('login')">Sign In</button>
                     </div>
                 </form>
             </div>
@@ -75,9 +77,20 @@
         fetch(`${baseURL}${type}`, { method: 'post', body: JSON.stringify(formObj), headers: { "Content-Type": "application/json" } })
             .then((res) => res.json())
             .then((res) => console.log(res))
-            .catch(error => {
-                console.error('Fetch error:', error);
-            });
+            .catch(error => console.error('Fetch error:', error));
+    }
+
+    function otpVerify() {
+        let mobile = document.querySelector(`input[name=mobile]`);
+        let verifyMobile = document.getElementsByClassName("veryfyMobile")[0];
+        let otpV = document.getElementById('otpVerify').classList;
+        const body = { 'number': mobile.value, 'otp': document.querySelector(`input[name=otp]`).value };
+        mobile.setAttribute('disabled', 'disabled'); verifyMobile.setAttribute('disabled', 'disabled'); otpV.remove('d-none');
+        setTimeout(()=> { mobile.removeAttribute("disabled"); verifyMobile.removeAttribute("disabled"); otpV.add('d-none'); }, 120000)
+        fetch(`${baseURL}verify`, { method: 'post', body: JSON.stringify(body), headers: { "Content-Type": "application/json" } })
+            .then((res) => res.json())
+            .then((res) => console.log(res))
+            .catch(error => console.error('Fetch error:', error));
     }
 </script>
 
